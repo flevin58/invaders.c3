@@ -1,12 +1,12 @@
 module game;
 import std::collections::list;
-import raylib;
+import raylib5;
 
 // Collideable interface for objects that can collide
 // with other objects in the game.
 // Raylib Rectangle is used to define the collision boundaries.
 interface Collideable {
-    fn raylib::Rectangle get_rect();
+    fn rl::Rectangle get_rect();
 }
 
 // Disableable interface for objects that can be didabled or enabled

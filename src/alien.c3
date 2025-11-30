@@ -1,7 +1,7 @@
 module game;
-import raylib;
+import raylib5;
 
-enum AlienType : char (String image_file, int score) {
+enum AlienType : char (ZString image_file, int score) {
 	KURA = { "resources/alien_kura.png", 100 },
 	KANI = { "resources/alien_kani.png", 200 },
 	IKA =  { "resources/alien_ika.png", 400 },
@@ -10,7 +10,7 @@ enum AlienType : char (String image_file, int score) {
 struct Alien (Collideable, Disableable) {
 	AlienType type;
 	Vector2 position;
-	raylib::Texture2D texture;
+	Texture2D texture;
 	bool enabled;
 }
 
@@ -19,7 +19,7 @@ fn Alien* new_alien(AlienType type, Vector2 pos) {
 	*alien = {
 		.type = type,
 		.position = pos,
-		.texture = raylib::load_texture(type.image_file),
+		.texture = rl::loadTexture(type.image_file),
 		.enabled = true,
 	};
 	return alien;
@@ -39,7 +39,7 @@ fn Rectangle Alien.get_rect(&self) @dynamic {
 }
 
 fn bool Alien.collided_with(&self, Collideable other) {
-	return raylib::check_collision_recs(self.get_rect(), other.get_rect());
+	return rl::checkCollisionRecs(self.get_rect(), other.get_rect());
 }
 
 fn int Alien.get_score(&self) {
@@ -51,7 +51,7 @@ fn void Alien.update(&self, int direction) {
 }
 
 fn void Alien.draw(&self) {
-	raylib::draw_texture_v(self.texture, self.position, raylib::WHITE);
+	rl::drawTextureV(self.texture, self.position, rl::WHITE);
 }
 
 // Impleneting the Disableable interface

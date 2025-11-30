@@ -1,9 +1,9 @@
 module game;
-import raylib;
+import raylib5;
 
 
 struct MysteryShip (Collideable, Disableable) {
-	raylib::Texture2D texture;
+	Texture2D texture;
 	Vector2 position;
 	float speed;
 	bool enabled;
@@ -11,7 +11,7 @@ struct MysteryShip (Collideable, Disableable) {
 
 fn MysteryShip new_mystery_ship() {
 	return {
-		.texture = raylib::load_texture("resources/mystery.png"),
+		.texture = rl::loadTexture("resources/mystery.png"),
         .position = { 0f, 90f },
         .speed = 0f,
         .enabled = false,
@@ -20,12 +20,12 @@ fn MysteryShip new_mystery_ship() {
 
 fn void MysteryShip.spawn(&self) {
 	self.position.y = 90;
-	float side = raylib::get_random_value(0, 1);
+	float side = rl::getRandomValue(0, 1);
 	if (side == 0) {
 		self.position.x = 25;
 		self.speed = 3;
 	} else {
-		self.position.x = (float)(raylib::get_screen_width() - self.texture.width) - 25f;
+		self.position.x = (float)(rl::getScreenWidth() - self.texture.width) - 25f;
 		self.speed = -3;
 	}
 	self.enabled = true;
@@ -34,7 +34,7 @@ fn void MysteryShip.spawn(&self) {
 fn void MysteryShip.update(&self) {
 	if (self.enabled) {
 		self.position.x += self.speed;
-		if (self.position.x > (float) (raylib::get_screen_width() - self.texture.width) - 25f || self.position.x < 25f) {
+		if (self.position.x > (float) (rl::getScreenWidth() - self.texture.width) - 25f || self.position.x < 25f) {
 			self.enabled = false;
 		}
 	}
@@ -42,11 +42,11 @@ fn void MysteryShip.update(&self) {
 
 fn void MysteryShip.draw(self) {
 	if (self.enabled) {
-		raylib::draw_texture_v(self.texture, self.position, raylib::WHITE);
+		rl::drawTextureV(self.texture, self.position, rl::WHITE);
 	}
 }
 
-fn raylib::Rectangle MysteryShip.get_rect(&self) @dynamic {
+fn Rectangle MysteryShip.get_rect(&self) @dynamic {
 	if (self.enabled) {
 		return {
 			.x = self.position.x,

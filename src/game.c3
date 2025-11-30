@@ -1,6 +1,6 @@
 module game;
 import std::collections::list;
-import raylib;
+import raylib5;
 
 enum GameState {
   IDLE,
@@ -17,9 +17,9 @@ alias LaserList = List{Laser*};
 
 struct Game {
     GameState state;
-    raylib::Font font;
-    raylib::Sound explosion_sound;
-    raylib::Music music;
+    rl::Font font;
+    rl::Sound explosion_sound;
+    rl::Music music;
     double alien_laser_shoot_interval;
     int level;
     int score;
@@ -40,9 +40,9 @@ struct Game {
 
 fn Game new() {
     Game game = {
-        .font = raylib::load_font("resources/monogram.ttf"),
-        .music = raylib::load_music_stream("resources/music.ogg"),
-        .explosion_sound = raylib::load_sound("resources/explosion.ogg"),
+        .font = rl::loadFont("resources/monogram.ttf"),
+        .music = rl::loadMusicStream("resources/music.ogg"),
+        .explosion_sound = rl::loadSound("resources/explosion.ogg"),
 		.lives = 3,
 		.level = 0,
 		.score = 0,
@@ -59,20 +59,20 @@ fn Game new() {
     game.init_level();
     game.create_obstacles();
     game.create_aliens();
-	raylib::play_music_stream(game.music);
-	raylib::set_music_volume(game.music, 0.6);
+	rl::playMusicStream(game.music);
+	rl::setMusicVolume(game.music, 0.6);
     return game;
 }
 
 fn void Game.free(&self) {
-    raylib::trace_log(raylib::TraceLogLevel.INFO, "Deinitializing game...");
+    rl::traceLog(rl::TraceLogLevel.INFO, "Deinitializing game...");
 	self.spaceship.free();
     self.obstacles.free();
     self.aliens.free();
     self.alien_lasers.free();
-    raylib::unload_font(self.font);
-    raylib::unload_sound(self.explosion_sound);
-    raylib::unload_music_stream(self.music);
+    rl::unloadFont(self.font);
+    rl::unloadSound(self.explosion_sound);
+    rl::unloadMusicStream(self.music);
 }
 
 fn void Game.init(&self) {
@@ -89,7 +89,7 @@ fn void Game.init_level(&self) {
 	self.state = RUNNING;
 	self.level++;
 	self.aliens_direction = 1;
-	self.ms_spawn_interval = (double) raylib::get_random_value(10, 20);
+	self.ms_spawn_interval = (double) rl::getRandomValue(10, 20);
 	self.ms_time_last_spawned = 0;
 	self.time_last_alien_fired = 0;
 }
@@ -105,10 +105,10 @@ fn void Game.reset(&self) {
 
 fn void Game.create_obstacles(&self) {
   	int obstacle_width = get_obstacle_width();
-	int gap = (raylib::get_screen_width() - (4 * obstacle_width)) / 5;
+	int gap = (rl::getScreenWidth() - (4 * obstacle_width)) / 5;
 	for (int i = 0; i < 4; ++i) {
 		int offsetx = (i+1) * gap + i * obstacle_width;
-		self.obstacles.push(new_obstacle((float) offsetx, (float) (raylib::get_screen_height()-200)));
+		self.obstacles.push(new_obstacle((float) offsetx, (float) (rl::getScreenHeight()-200)));
 	}
 }
 
@@ -125,8 +125,8 @@ fn void Game.create_aliens(&self) {
 		AlienType alien_type = (row == 0) ? IKA : (row <= 2) ? KANI : KURA;
 		for (int col = 0; col < 11; ++col) {
       		Vector2 alien_pos = {
-          	.x = 75f + (float)(col * 55),
-          	.y = 110f + (float)(row * 55)
+          		75f + (float)(col * 55),
+          		110f + (float)(row * 55)
       		};
 			self.aliens.push(new_alien(alien_type, alien_pos));
 		}
@@ -157,7 +157,7 @@ fn void Game.move_down_aliens_by(&self, int distance) {
 
 fn void Game.move_aliens(&self) {
 	foreach (alien : self.aliens) {
-		if ((int)alien.position.x + alien.texture.width > raylib::get_screen_width() - 25) {
+		if ((int)alien.position.x + alien.texture.width > rl::getScreenWidth() - 25) {
 			self.aliens_direction = -1;
 			self.move_down_aliens_by(4);
 		}
@@ -170,7 +170,7 @@ fn void Game.move_aliens(&self) {
 }
 
 fn bool Game.should_quit(&self) {
-    return (self.state == QUIT) || raylib::window_should_close();
+    return (self.state == QUIT) || rl::windowShouldClose();
 }
 
 fn void Game.update(&self) {
@@ -178,7 +178,7 @@ fn void Game.update(&self) {
 		return;
 	}
 
-	raylib::update_music_stream(self.music);
+	rl::updateMusicStream(self.music);
 
 	self.check_for_collisions();
 
@@ -186,10 +186,10 @@ fn void Game.update(&self) {
 	// 	return;
 	// }
 
-	if (raylib::get_time() - self.ms_time_last_spawned > self.ms_spawn_interval) {
+	if (rl::getTime() - self.ms_time_last_spawned > self.ms_spawn_interval) {
 		self.mysteryship.spawn(); 
-		self.ms_time_last_spawned = raylib::get_time();
-		self.ms_spawn_interval = (double) raylib::get_random_value(10, 20);
+		self.ms_time_last_spawned = rl::getTime();
+		self.ms_spawn_interval = (double) rl::getRandomValue(10, 20);
 	}
 
 	self.spaceship.update();
@@ -207,11 +207,11 @@ fn void Game.update(&self) {
 
 fn void Game.draw(&self) {
     // draw game elements on the screen
-	  raylib::clear_background(GREY);
+	  rl::clearBackground(GREY);
 
 	  // Draw the GUI
-	  raylib::draw_rectangle_rounded_lines({10, 10, 780, 780}, 0.18, 20, 2, YELLOW);
-	  raylib::draw_line_ex({25, 730}, {775, 730}, 3, YELLOW);
+	  rl::drawRectangleRoundedLines({10, 10, 780, 780}, 0.18, 20, YELLOW);
+	  rl::drawLineEx({25, 730}, {775, 730}, 3, YELLOW);
 
     if (self.state == GAME_OVER) {
       self.text_at(570, 740, "GAME OVER");
@@ -263,19 +263,19 @@ fn void Game.aliens_shoot_laser(&self) {
 	}
 
 	// enough time should have passed from last alien laser
-	if (raylib::get_time() - self.time_last_alien_fired < ALIEN_LASER_SHOOT_INTERVAL) {
+	if (rl::getTime() - self.time_last_alien_fired < ALIEN_LASER_SHOOT_INTERVAL) {
 		return;
 	}
 
 	// create a random alien laser and add it to the queue
-	int random_index = raylib::get_random_value(0, (int) self.aliens.len() - 1);
+	int random_index = rl::getRandomValue(0, (int) self.aliens.len() - 1);
 	Alien *alien = self.aliens[random_index];
   Vector2 laser_pos = {
-      .x = alien.position.x + (float) alien.texture.width * 0.5 - 2,
-      .y = alien.position.y + (float) alien.texture.height
+      alien.position.x + (float) alien.texture.width * 0.5 - 2,
+      alien.position.y + (float) alien.texture.height
   };
 	self.alien_lasers.push(new_laser(laser_pos, 6f));
-	self.time_last_alien_fired = raylib::get_time();
+	self.time_last_alien_fired = rl::getTime();
 }
 
 fn void Game.add_score(&self, int earned) {
@@ -293,7 +293,7 @@ fn void Game.check_for_collisions(&self) {
 		foreach ( alien : self.aliens) {
 			if (laser.collided_with(alien)) {
 				if (!self.mute_sfx) {
-					raylib::play_sound(self.explosion_sound);
+					rl::playSound(self.explosion_sound);
 				}
 				self.add_score(alien.get_score());
 				alien.disable();
@@ -328,7 +328,7 @@ fn void Game.check_for_collisions(&self) {
 		// Check against mystery ship
 		if (laser.collided_with(&self.mysteryship)) {
 			if (!self.mute_sfx) {
-				raylib::play_sound(self.explosion_sound);
+			rl::playSound(self.explosion_sound);
 			}
 			self.add_score(500);
 			self.mysteryship.disable();
@@ -346,7 +346,7 @@ fn void Game.check_for_collisions(&self) {
 			if (self.lives == 0) {
 				self.game_over();
 			}
-			raylib::trace_log(raylib::TraceLogLevel.INFO, "Spaceship hit! %d lives left", self.lives);
+			rl::traceLog(rl::TraceLogLevel.INFO, "Spaceship hit! %d lives left", self.lives);
 		}
 		// Alien lasers against Obstacles
 		foreach (obstacle : self.obstacles) {
@@ -389,5 +389,5 @@ fn void Game.check_for_collisions(&self) {
 fn void Game.game_over(&self) {
 	self.state = GAME_OVER;
 	self.save_high_score();
-	raylib::trace_log(raylib::TraceLogLevel.INFO, "Game Over!");
+	rl::traceLog(rl::TraceLogLevel.INFO, "Game Over!");
 }

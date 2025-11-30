@@ -1,7 +1,7 @@
 module game;
 import std::collections::list;
 import std::math;
-import raylib;
+import raylib5;
 
 struct Spaceship (Collideable) {
 	Texture2D texture;
@@ -13,15 +13,15 @@ struct Spaceship (Collideable) {
 }
 
 fn Spaceship new_spaceship() {
-    Texture2D texture = raylib::load_texture("resources/spaceship.png");
-	float xpos = (float) (raylib::get_screen_width() - texture.width) * 0.5;
-	float ypos = (float) (raylib::get_screen_height() - texture.height - 100);
+    Texture2D texture = rl::loadTexture("resources/spaceship.png");
+	float xpos = (float) (rl::getScreenWidth() - texture.width) * 0.5;
+	float ypos = (float) (rl::getScreenHeight() - texture.height - 100);
 	return {
 		.texture = texture,
 		.position = { xpos, ypos },
 		.lasers = {},
 		.last_fire_time = 0,
-		.laser_sound = raylib::load_sound("resources/laser.ogg"),
+		.laser_sound = rl::loadSound("resources/laser.ogg"),
 		.mute = false,
 	};
 }
@@ -32,11 +32,11 @@ fn void Spaceship.free(&self) {
     }
 	self.clear_lasers();
     self.lasers.free();
-    raylib::unload_sound(self.laser_sound);
-    raylib::unload_texture(self.texture);
+    rl::unloadSound(self.laser_sound);
+    rl::unloadTexture(self.texture);
 }
 
-fn raylib::Rectangle Spaceship.get_rect(&self) @dynamic {
+fn Rectangle Spaceship.get_rect(&self) @dynamic {
 	return {
 		.x = self.position.x,
 		.y = self.position.y,
@@ -46,8 +46,8 @@ fn raylib::Rectangle Spaceship.get_rect(&self) @dynamic {
 }
 
 fn void Spaceship.reset(&self) {
-	self.position.x = (float) (raylib::get_screen_width() - self.texture.width) * 0.5;
-	self.position.y = (float) (raylib::get_screen_height() - self.texture.height - 100);
+	self.position.x = (float) (rl::getScreenWidth() - self.texture.width) * 0.5;
+	self.position.y = (float) (rl::getScreenHeight() - self.texture.height - 100);
 	self.clear_lasers();
 }
 
@@ -60,16 +60,16 @@ fn void Spaceship.clear_lasers(&self) {
 }
 
 fn void Spaceship.fire_laser(&self) {
-	if (raylib::get_time() - self.last_fire_time >= 0.35) {
+	if (rl::getTime() - self.last_fire_time >= 0.35) {
 		if (!self.mute) {
-			raylib::play_sound(self.laser_sound);
+			rl::playSound(self.laser_sound);
 		}
         Vector2 pos = {
-            .x = self.position.x + (float) self.texture.width * 0.5 - 2,
-            .y = self.position.y
+            self.position.x + (float) self.texture.width * 0.5 - 2,
+            self.position.y
         };
 		self.lasers.push(new_laser(pos, -6f));
-		self.last_fire_time = raylib::get_time();
+		self.last_fire_time = rl::getTime();
 	}
 }
 
@@ -84,7 +84,7 @@ fn void Spaceship.update(&self) {
 }
 
 fn void Spaceship.draw(self) {
-	raylib::draw_texture_v(self.texture, self.position, raylib::WHITE);
+	rl::drawTextureV(self.texture, self.position, rl::WHITE);
 	foreach ( laser : self.lasers) {
 		laser.draw();
 	}
@@ -92,7 +92,7 @@ fn void Spaceship.draw(self) {
 
 fn void Spaceship.draw_at(self, int xpos, int ypos) {
 	Vector2 position = { (float) xpos, (float) ypos };
-	raylib::draw_texture_v(self.texture, position, raylib::WHITE);
+	rl::drawTextureV(self.texture, position, rl::WHITE);
 }
 
 fn void Spaceship.move_left(&self) {
@@ -100,5 +100,5 @@ fn void Spaceship.move_left(&self) {
 }
 
 fn void Spaceship.move_right(&self) {
-    self.position.x = math::min((float)(raylib::get_screen_width() - self.texture.width) - 25f, self.position.x + 7f);
+    self.position.x = math::min((float)(rl::getScreenWidth() - self.texture.width) - 25f, self.position.x + 7f);
 }

@@ -1,5 +1,5 @@
 module game;
-import raylib;
+import raylib5;
 
 struct Block (Collideable, Disableable) {
 	Vector2 position;
@@ -20,10 +20,10 @@ fn void Block.free(&self) {
 }
 
 fn void Block.draw(&self) {
-	raylib::draw_rectangle_rec(self.get_rect(), BLOCK_COLOR);
+	rl::drawRectangleRec(self.get_rect(), BLOCK_COLOR);
 }
 
-fn raylib::Rectangle Block.get_rect(&self) @dynamic {
+fn rl::Rectangle Block.get_rect(&self) @dynamic {
 	return {
 		.x = self.position.x,
 		.y = self.position.y,

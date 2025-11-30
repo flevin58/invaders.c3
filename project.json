@@ -7,7 +7,7 @@
     "lib"
   ],
   "dependencies": [
-    "raylib"
+    "raylib55"
   ],
   "authors": [
     "Fernando Levin <flevin58@gmail.com>"

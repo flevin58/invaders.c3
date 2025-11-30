@@ -1,18 +1,18 @@
 module game;
-import raylib;
+import raylib5;
 
 fn void Game.handle_game_over_input(&self) {
-	if (raylib::is_key_pressed(keyboard::ESCAPE)) {
+	if (rl::isKeyPressed(rl::KEY_ESCAPE)) {
 		self.state = QUIT;
 	}
-	if (raylib::is_key_pressed(keyboard::ENTER)) {
+	if (rl::isKeyPressed(rl::KEY_ENTER)) {
 		//self.reset();
 		self.init();
 	}
 }
 
 fn void Game.handle_level_up_input(&self) {
-	if (raylib::is_key_pressed(keyboard::ENTER)) {
+	if (rl::isKeyPressed(rl::KEY_ENTER)) {
 		self.reset();
 		self.init_level();
 	}
@@ -31,32 +31,32 @@ fn void Game.handle_input(&self) {
 
 	// Handle movement and laser fire
 	if (self.state == RUNNING) {
-		if (raylib::is_key_down(keyboard::LEFT)) {
+		if (rl::isKeyDown(rl::KEY_LEFT)) {
 			self.spaceship.move_left();
-		} else if (raylib::is_key_down(keyboard::RIGHT)) {
+		} else if (rl::isKeyDown(rl::KEY_RIGHT)) {
 			self.spaceship.move_right();
-		} else if (raylib::is_key_down(keyboard::SPACE)) {
+		} else if (rl::isKeyDown(rl::KEY_SPACE)) {
 			self.spaceship.fire_laser();
 		}
 	}
 
 	// Handle pause / resume
-	if (raylib::is_key_pressed(keyboard::P)) {
+	if (rl::isKeyPressed(rl::KEY_P)) {
 		self.state = (self.state == PAUSED) ? RUNNING : PAUSED;
 	}
 
 	// Handle pause/Resume music
-	if (raylib::is_key_pressed(keyboard::M)) {
+	if (rl::isKeyPressed(rl::KEY_M)) {
 		self.mute_music = !self.mute_music;
 		if (self.mute_music) {
-			raylib::pause_music_stream(self.music);
+			rl::pauseMusicStream(self.music);
 		} else {
-			raylib::resume_music_stream(self.music);
+			rl::resumeMusicStream(self.music);
 		}
 	}
 
 	// Handle pause/Resume sfx
-	if (raylib::is_key_pressed(keyboard::S)) {
+	if (rl::isKeyPressed(rl::KEY_S)) {
 		self.mute_sfx = !self.mute_sfx;
 		self.spaceship.mute = self.mute_sfx;
 	}

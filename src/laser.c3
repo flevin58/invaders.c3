@@ -1,5 +1,5 @@
 module game;
-import raylib;
+import raylib5;
 
 struct Laser(Disableable, Collideable) {
   Vector2 position;
@@ -22,13 +22,13 @@ fn void Laser.free(&self) {
 }
 
 fn bool Laser.collided_with(&self, Collideable other) {
-  return raylib::check_collision_recs(self.get_rect(), other.get_rect());
+  return rl::checkCollisionRecs(self.get_rect(), other.get_rect());
 }
 
 fn void Laser.update(&self) {
   if (self.enabled) {
     self.position.y += self.speed;
-    float screen_height = (float)raylib::get_screen_height();
+    float screen_height = (float)rl::getScreenHeight();
     if (self.position.y > screen_height - 100f || self.position.y < 25f) {
       self.enabled = false;
     }
@@ -37,11 +37,11 @@ fn void Laser.update(&self) {
 
 fn void Laser.draw(&self) {
   if (self.enabled) {
-    raylib::draw_rectangle_rec(self.get_rect(), LASER_COLOR);
+    rl::drawRectangleRec(self.get_rect(), LASER_COLOR);
   }
 }
 
-fn raylib::Rectangle Laser.get_rect(&self) @dynamic {
+fn Rectangle Laser.get_rect(&self) @dynamic {
   return {
       .x = self.position.x,
       .y = self.position.y,

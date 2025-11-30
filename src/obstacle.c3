@@ -1,7 +1,7 @@
 module game;
 import std::core::mem;
 import std::collections::list;
-import raylib;
+import raylib5;
 
 const char[*][*] GRID = {
     {0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0},
